@@ -5,26 +5,28 @@ int main() {
     int n;
     cin >> n;
 
-    vector<int> win;
+    vector<int> ticket;
+    vector<int> cnt(8, 0);
     for (int i = 0; i < 7; ++i) {
         int x;
         cin >> x;
-        win.push_back(x);
+        ticket.push_back(x);
     }
 
     while (n--) {
-        int cnt = 0;
+        int c = 0;
         for (int i = 0; i < 7; ++i) {
             int x;
             cin >> x;
-            for (int j = 0; j < 7; ++j) {
-                if () {
-                    cnt++;
-                    break;
-                }
+            if (find(ticket.begin(), ticket.end(), x) != ticket.end()) {
+                c++;
             }
         }
-        cout << cnt << endl;
+        cnt[c]++;
+    }
+
+    for (int i = 7; i >= 1; --i) {
+        cout << cnt[i] << " ";
     }
 
     return 0;
