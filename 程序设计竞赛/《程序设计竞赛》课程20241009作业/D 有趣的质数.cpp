@@ -1,50 +1,60 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int prime[1000005] = {0};
+#define N 1000005
+
 int dp[1000005] = {0};
 
-int is_prime(int n) {
-    if (prime[n] != 0) {
-        return prime[n] == 1;
-    }
-    if (n < 2) {
-        return 0;
-    }
-    for (int i = 2; i <= sqrt(n); i++) {
-        if (n % i == 0) {
-            return 0;
+vector<int> pri;
+bool not_prime[N];
+
+void pre(int n) {
+    for (int i = 2; i <= n; ++i) {
+        if (!not_prime[i]) {
+            pri.push_back(i);
+        }
+        for (int pri_j : pri) {
+            if (i * pri_j > n) break;
+            not_prime[i * pri_j] = true;
+            if (i % pri_j == 0) {
+                break;
+            }
         }
     }
-    return  prime[n] = 1;
 }
 
 int sum_each_pos(int n) {
-    int sum = 0;
+    int s = 0;
     while (n) {
-        sum += n % 10;
+        s += n % 10;
         n /= 10;
     }
-    return sum;
+    return s;
+}
+
+void pre2(int n) {
+    dp[0] = dp[1] = 0;
+    for (int i = 2; i < n; ++i) {
+        if (!not_prime[i] && !not_prime[sum_each_pos(i)]) {
+            dp[i] = dp[i - 1] + 1;
+        } else {
+            dp[i] = dp[i - 1];
+        }
+    }
 }
 
 int main() {
     int T;
-    cin >> T;
+    scanf("%d", &T);
+
+    pre(N);
+    pre2(N);
 
     while (T--) {
         int a, b;
-        cin >> a >> b;
+        scanf("%d %d", &a, &b);
 
-        int cnt = 0;
-        for (int i = a; i <= b; ++i) {
-            if (dp[i] || is_prime(i) && is_prime(sum_each_pos(i))) {
-                dp[i] = 1;
-                cnt++;
-            }
-        }
-
-        cout << cnt << endl;
+        printf("%d\n", dp[b] - dp[a - 1]);
     }
 
     return 0;
